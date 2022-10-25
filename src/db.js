@@ -3,6 +3,7 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME } = process.env;
+import * as pg from "pg";
 
 let sequelize =
   process.env.NODE_ENV === "production"
@@ -30,17 +31,20 @@ let sequelize =
       })
     : new Sequelize(
         `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/videogames`,
-        { logging: false, native: false }
+
+        {
+          logging: false,
+          native: false,
+          dialectModule: pg,
+          dialectOptions: {
+            ssl: {
+              require: true, // This will help you. But you will see nwe error
+              rejectUnauthorized: false, // This line will fix new error
+            },
+          },
+        }
       );
 
-// //*Ahora voy a realizar la conexion entre mi proyecto NODEjs y mi db
-// const sequelize = new Sequelize(
-// 	`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/videogames`,
-// 	{
-// 		logging: false, // set to console.log to see the raw SQL queries
-// 		native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-// 	},
-// );
 const basename = path.basename(__filename);
 
 const modelDefiners = [];

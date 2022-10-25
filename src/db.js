@@ -5,45 +5,21 @@ const path = require("path");
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME } = process.env;
 import * as pg from "pg";
 
-let sequelize =
-  process.env.NODE_ENV === "production"
-    ? new Sequelize({
-        database: DB_NAME,
-        dialect: "postgres",
-        host: DB_HOST,
-        port: 5432,
-        username: DB_USER,
-        password: DB_PASSWORD,
-        pool: {
-          max: 3,
-          min: 1,
-          idle: 10000,
-        },
-        dialectOptions: {
-          ssl: {
-            require: true,
-            // Ref.: https://github.com/brianc/node-postgres/issues/2009
-            rejectUnauthorized: false,
-          },
-          keepAlive: true,
-        },
-        ssl: true,
-      })
-    : new Sequelize(
-        `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/adgdzhpl`,
+let sequelize = new Sequelize(
+  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/adgdzhpl`,
 
-        {
-          logging: false,
-          native: false,
-          dialectModule: pg,
-          dialectOptions: {
-            ssl: {
-              require: true, // This will help you. But you will see nwe error
-              rejectUnauthorized: false, // This line will fix new error
-            },
-          },
-        }
-      );
+  {
+    logging: false,
+    native: false,
+    dialectModule: pg,
+    dialectOptions: {
+      ssl: {
+        require: true, // This will help you. But you will see nwe error
+        rejectUnauthorized: false, // This line will fix new error
+      },
+    },
+  }
+);
 
 const basename = path.basename(__filename);
 
